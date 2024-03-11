@@ -8,12 +8,36 @@ let input = {
 let player = {
     x: 0,
     y: 0,
+    height: 50,
+    width: 50,
+}
+let field = {
+    height: 500,
+    width: 500,
 }
 
-let fieldElement = document.querySelector('.field');
+let fieldElement = document.createElement('div');
+fieldElement.className = "field";
+fieldElement.style.cssText = `
+    background-color: gray;
+    position: absolute;
+    height: ${field.height}px;
+    width: ${field.width}px;
+    top: 50%;
+    left: 50%;
+    margin-top: ${-0.5 * field.height}px;
+    margin-left: ${-0.5 * field.width}px;
+`;
+document.body.append(fieldElement);
 
 let playerElement = document.createElement('div');
 playerElement.className = "player";
+playerElement.style.cssText = `
+    background-color: red;;
+    position: absolute;
+    height: ${player.height}px;
+    width: ${player.width}px;
+`;
 document.body.append(playerElement);
 
 document.addEventListener('keydown', (event) => {
@@ -40,5 +64,5 @@ function update() {
     if (input.down) player.y++;
     playerElement.style.left = fieldRect.left + player.x + 'px';
     playerElement.style.top = fieldRect.top + player.y + 'px';
-    console.log();
+    console.log(fieldRect);
 }
