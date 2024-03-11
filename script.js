@@ -1,20 +1,20 @@
 let frameRate = 20;
-let x = 0;
-let y = 0;
 let input = {
     left: false,
     right: false,
     up: false,
     down: false,
 }
+let player = {
+    x: 0,
+    y: 0,
+}
 
-let field = document.querySelector('.field');
-let fieldRect = field.getBoundingClientRect();
+let fieldElement = document.querySelector('.field');
 
-let player = document.createElement('div');
-player.className = "player";
-document.body.append(player);
-let playerRect = player.getBoundingClientRect();
+let playerElement = document.createElement('div');
+playerElement.className = "player";
+document.body.append(playerElement);
 
 document.addEventListener('keydown', (event) => {
     if (event.key == 'ArrowLeft') input.left = true;
@@ -33,12 +33,12 @@ document.addEventListener('keyup', (event) => {
 let timerId = setInterval(update, 1000/frameRate);
 
 function update() {
-    if (input.left) x--;
-    if (input.right) x++;
-    if (input.up) y--;
-    if (input.down) y++;
-    player.style.left = x + 'px';
-    player.style.top = y + 'px';
-    playerRect = player.getBoundingClientRect();
-    console.log(playerRect);
+    fieldRect = fieldElement.getBoundingClientRect();
+    if (input.left ) player.x--;
+    if (input.right) player.x++;
+    if (input.up) player.y--;
+    if (input.down) player.y++;
+    playerElement.style.left = fieldRect.left + player.x + 'px';
+    playerElement.style.top = fieldRect.top + player.y + 'px';
+    console.log();
 }
