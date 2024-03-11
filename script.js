@@ -8,6 +8,9 @@ let input = {
     down: false,
 }
 
+let field = document.querySelector('.field');
+let fieldRect = field.getBoundingClientRect();
+
 let player = document.createElement('div');
 player.className = "player";
 document.body.append(player);
@@ -35,5 +38,7 @@ function update() {
     if (input.up) y--;
     if (input.down) y++;
     player.style.left = x + 'px';
-    div.style.top = y + 'px';
+    player.style.top = y + 'px';
+    playerRect = player.getBoundingClientRect();
+    console.log(playerRect);
 }
