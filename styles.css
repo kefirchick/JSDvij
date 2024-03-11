@@ -1,0 +1,12 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+.player {
+    background-color: red;
+    height: 50px;
+    width:50px;
+    position: fixed;
+}
