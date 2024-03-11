@@ -1,4 +1,4 @@
-let frameRate = 20;
+let frameRate = 60;
 let input = {
     left: false,
     right: false,
@@ -10,10 +10,11 @@ let player = {
     y: 0,
     height: 50,
     width: 50,
+    speed: 5,
 }
 let field = {
-    height: 500,
-    width: 500,
+    height: 300,
+    width: 300,
 }
 
 let fieldElement = document.createElement('div');
@@ -58,10 +59,10 @@ let timerId = setInterval(update, 1000/frameRate);
 
 function update() {
     fieldRect = fieldElement.getBoundingClientRect();
-    if (input.left ) player.x--;
-    if (input.right) player.x++;
-    if (input.up) player.y--;
-    if (input.down) player.y++;
+    if (input.left && player.x >= player.speed) player.x -= player.speed;
+    if (input.right && player.x + player.width <= field.width - player.speed) player.x += player.speed;
+    if (input.up && player.y >= player.speed) player.y -= player.speed;
+    if (input.down && player.y + player.height <= field.height - player.speed) player.y += player.speed;
     playerElement.style.left = fieldRect.left + player.x + 'px';
     playerElement.style.top = fieldRect.top + player.y + 'px';
     console.log(fieldRect);
