@@ -10,7 +10,7 @@ let player = {
     y: 0,
     height: 50,
     width: 50,
-    speed: 5,
+    speed: 10,
 }
 let field = {
     height: 300,
@@ -65,5 +65,5 @@ function update() {
     if (input.down && player.y + player.height <= field.height - player.speed) player.y += player.speed;
     playerElement.style.left = fieldRect.left + player.x + 'px';
     playerElement.style.top = fieldRect.top + player.y + 'px';
-    console.log(fieldRect);
+    console.log();
 }
