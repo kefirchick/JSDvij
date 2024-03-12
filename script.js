@@ -48,58 +48,33 @@ class Actor {
     }
 }
 
-class Field extends Actor {
-    constructor(h=300, w=300, color='gray') {
-        super(h, w, 'field', color);
-        this.div.style.cssText += `
-            top: 50%;
-            left: 50%;
-            margin-top: ${-0.5 * h}px;
-            margin-left: ${-0.5 * w}px;
-        `
-    }
-}
-
 class Player extends Actor {
     x;
     y;
     speed;
-    field = null;
     input = null;
 
-    constructor(field, input, x=0, y=0, h=50, w=50, speed=10, color='red') {
+    constructor(input, x=0, y=0, h=50, w=50, speed=10, color='red') {
         super(h, w, 'player', color);
         this.x = x;
         this.y = y;
         this.speed = speed;
-        this.field = field;
         this.input = input;
     }
 
     update() {
-        let fieldRect = field.div.getBoundingClientRect();
-        this.checkFieldCollision();
         if (input.left && !this.collisions.left) this.x -= this.speed;
         if (input.right && !this.collisions.right) this.x += this.speed;
         if (input.up && !this.collisions.up) this.y -= this.speed;
         if (input.down && !this.collisions.down) this.y += this.speed;
-        this.div.style.left = fieldRect.left + this.x + 'px';
-        this.div.style.top = fieldRect.top + this.y + 'px';
-        console.log(this.collisions);
-    }
-
-    checkFieldCollision() {
-        this.collisions.left = (this.x <= 0) ? field : null;
-        this.collisions.right = (this.x + this.width >= field.width) ? field : null;
-        this.collisions.up = (this.y <= 0) ? field : null;
-        this.collisions.down = (this.y + this.height >= field.height) ? field : null;
+        this.div.style.left = this.x + 'px';
+        this.div.style.top = this.y + 'px';
     }
 }
 
 
 let input = new Input();
-let field = new Field();
-let player = new Player(field, input);
+let player = new Player(input);
 
 let timerId = setInterval(update, 1000/frameRate);
 
