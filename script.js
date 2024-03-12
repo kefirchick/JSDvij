@@ -26,6 +26,12 @@ class Actor {
     div = null;
     height;
     width;
+    collisions = {
+        left: null,
+        right: null,
+        up: null,
+        down: null,
+    }
 
     constructor(h=0, w=0, name='', color='white') {
         this.height = h;
@@ -57,8 +63,6 @@ class Field extends Actor {
 class Player extends Actor {
     x;
     y;
-    h;
-    w;
     speed;
     field = null;
     input = null;
@@ -74,12 +78,21 @@ class Player extends Actor {
 
     update() {
         let fieldRect = field.div.getBoundingClientRect();
-        if (input.left && this.x >= this.speed) this.x -= this.speed;
-        if (input.right && this.x + this.width <= field.width - this.speed) this.x += this.speed;
-        if (input.up && this.y >= player.speed) this.y -= this.speed;
-        if (input.down && this.y + this.height <= field.height - this.speed) this.y += this.speed;
+        this.checkFieldCollision();
+        if (input.left && !this.collisions.left) this.x -= this.speed;
+        if (input.right && !this.collisions.right) this.x += this.speed;
+        if (input.up && !this.collisions.up) this.y -= this.speed;
+        if (input.down && !this.collisions.down) this.y += this.speed;
         this.div.style.left = fieldRect.left + this.x + 'px';
         this.div.style.top = fieldRect.top + this.y + 'px';
+        console.log(this.collisions);
+    }
+
+    checkFieldCollision() {
+        this.collisions.left = (this.x <= 0) ? field : null;
+        this.collisions.right = (this.x + this.width >= field.width) ? field : null;
+        this.collisions.up = (this.y <= 0) ? field : null;
+        this.collisions.down = (this.y + this.height >= field.height) ? field : null;
     }
 }
 
