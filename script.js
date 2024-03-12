@@ -1,69 +1,95 @@
 let frameRate = 60;
-let input = {
-    left: false,
-    right: false,
-    up: false,
-    down: false,
+
+class Input {
+    left = false;
+    right = false;
+    up = false;
+    down = false;
+
+    constructor() {
+        document.addEventListener('keydown', (event) => {
+            if (event.key == 'ArrowLeft') this.left = true;
+            if (event.key == 'ArrowRight') this.right = true;
+            if (event.key == 'ArrowUp') this.up = true;
+            if (event.key == 'ArrowDown') this.down = true;
+        });
+        document.addEventListener('keyup', (event) => {
+            if (event.key == 'ArrowLeft') this.left = false;
+            if (event.key == 'ArrowRight') this.right = false;
+            if (event.key == 'ArrowUp') this.up = false;
+            if (event.key == 'ArrowDown') this.down = false;
+        });
+    }
 }
-let player = {
-    x: 0,
-    y: 0,
-    height: 50,
-    width: 50,
-    speed: 10,
+
+class Actor {
+    div = null;
+    height;
+    width;
+
+    constructor(h=0, w=0, name='', color='white') {
+        this.height = h;
+        this.width = w;
+        this.div = document.createElement('div');
+        this.div.className = name;
+        this.div.style.cssText = `
+            background-color: ${color};;
+            position: absolute;
+            height: ${h}px;
+            width: ${w}px;
+        `;
+        document.body.append(this.div);
+    }
 }
-let field = {
-    height: 300,
-    width: 300,
+
+class Field extends Actor {
+    constructor(h=300, w=300, color='gray') {
+        super(h, w, 'field', color);
+        this.div.style.cssText += `
+            top: 50%;
+            left: 50%;
+            margin-top: ${-0.5 * h}px;
+            margin-left: ${-0.5 * w}px;
+        `
+    }
 }
 
-let fieldElement = document.createElement('div');
-fieldElement.className = "field";
-fieldElement.style.cssText = `
-    background-color: gray;
-    position: absolute;
-    height: ${field.height}px;
-    width: ${field.width}px;
-    top: 50%;
-    left: 50%;
-    margin-top: ${-0.5 * field.height}px;
-    margin-left: ${-0.5 * field.width}px;
-`;
-document.body.append(fieldElement);
+class Player extends Actor {
+    x;
+    y;
+    h;
+    w;
+    speed;
+    field = null;
+    input = null;
 
-let playerElement = document.createElement('div');
-playerElement.className = "player";
-playerElement.style.cssText = `
-    background-color: red;;
-    position: absolute;
-    height: ${player.height}px;
-    width: ${player.width}px;
-`;
-document.body.append(playerElement);
+    constructor(field, input, x=0, y=0, h=50, w=50, speed=10, color='red') {
+        super(h, w, 'player', color);
+        this.x = x;
+        this.y = y;
+        this.speed = speed;
+        this.field = field;
+        this.input = input;
+    }
 
-document.addEventListener('keydown', (event) => {
-    if (event.key == 'ArrowLeft') input.left = true;
-    if (event.key == 'ArrowRight') input.right = true;
-    if (event.key == 'ArrowUp') input.up = true;
-    if (event.key == 'ArrowDown') input.down = true;
-});
+    update() {
+        let fieldRect = field.div.getBoundingClientRect();
+        if (input.left && this.x >= this.speed) this.x -= this.speed;
+        if (input.right && this.x + this.width <= field.width - this.speed) this.x += this.speed;
+        if (input.up && this.y >= player.speed) this.y -= this.speed;
+        if (input.down && this.y + this.height <= field.height - this.speed) this.y += this.speed;
+        this.div.style.left = fieldRect.left + this.x + 'px';
+        this.div.style.top = fieldRect.top + this.y + 'px';
+    }
+}
 
-document.addEventListener('keyup', (event) => {
-    if (event.key == 'ArrowLeft') input.left = false;
-    if (event.key == 'ArrowRight') input.right = false;
-    if (event.key == 'ArrowUp') input.up = false;
-    if (event.key == 'ArrowDown') input.down = false;
-});
+
+let input = new Input();
+let field = new Field();
+let player = new Player(field, input);
 
 let timerId = setInterval(update, 1000/frameRate);
 
 function update() {
-    fieldRect = fieldElement.getBoundingClientRect();
-    if (input.left && player.x >= player.speed) player.x -= player.speed;
-    if (input.right && player.x + player.width <= field.width - player.speed) player.x += player.speed;
-    if (input.up && player.y >= player.speed) player.y -= player.speed;
-    if (input.down && player.y + player.height <= field.height - player.speed) player.y += player.speed;
-    playerElement.style.left = fieldRect.left + player.x + 'px';
-    playerElement.style.top = fieldRect.top + player.y + 'px';
-    console.log();
+    player.update();
 }
