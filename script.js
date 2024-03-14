@@ -12,10 +12,6 @@ class Level {
         let actor = new Actor(x, y, w, h, name, color);
         this.actors.name = actor;
     }
-
-    update() {
-
-    }
 }
 
 class Input {
