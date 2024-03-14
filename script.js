@@ -2,7 +2,7 @@ let frameRate = 60;
 
 class Level {
     actors = {};
-    player = null;
+    player;
 
     constructor(player) {
         this.player = player;
@@ -11,6 +11,20 @@ class Level {
     createActor(x, y, w, h, name, color) {
         let actor = new Actor(x, y, w, h, name, color);
         this.actors.name = actor;
+        return actor;
+    }
+
+    update() {
+        for (let actor in this.actors) {
+            if (!this.isCollision(actor)) return;
+        }
+    }
+
+    isCollision(actor) {
+        if (this.player.x <= actor.x+actor.w &&
+            this.player.x+this.player.w >= actor.x &&
+            this.player.y <= actor.y+actor.h &&
+            this.player.y+this.player.h >= actor.y) return true;
     }
 }
 
@@ -38,7 +52,7 @@ class Input {
 
 class Actor {
     div = null;
-    x; y; width; height;
+    x; y; w; h;
     collisions = {
         left: null,
         right: null,
@@ -49,8 +63,8 @@ class Actor {
     constructor(x=0, y=0, w=0, h=0, name='', color='white') {
         this.x = x;
         this.y = y;
-        this.height = h;
-        this.width = w;
+        this.w = w;
+        this.h = h;
         this.div = document.createElement('div');
         this.div.className = name;
         this.div.style.cssText = `
@@ -58,8 +72,8 @@ class Actor {
             position: absolute;
             left: ${x}px;
             top: ${y}px;
-            height: ${h}px;
             width: ${w}px;
+            height: ${h}px;
         `;
         document.body.append(this.div);
     }
@@ -82,13 +96,14 @@ class Player extends Actor {
         if (input.down && !this.collisions.down) this.y += this.speed;
         this.div.style.left = this.x + 'px';
         this.div.style.top = this.y + 'px';
+
     }
 }
 
 let input = new Input();
 let player = new Player(input, 20, 20);
 let level = new Level(player);
-level.createActor(10, 10, 10, 320, 'border1', 'blue');
+let border1 = level.createActor(10, 10, 10, 320, 'border1', 'blue');
 level.createActor(20, 10, 300, 10, 'border2', 'blue');
 level.createActor(320, 10, 10, 320, 'border3', 'blue');
 level.createActor(20, 320, 300, 10, 'border4', 'blue');
