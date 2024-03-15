@@ -16,55 +16,36 @@ class Level {
 
     update() {
         this.player.update();
-        // сюда писать проверки разностей координат чтоб найти направление коллизии
-        if (this.actors.test) {
-            this.test(this.player.x, this.player.x+this.player.w,
-                      this.player.y, this.player.y+this.player.h,
-                      this.actors.test.x, this.actors.test.x+this.actors.test.w,
-                      this.actors.test.y, this.actors.test.y+this.actors.test.h);
-            this.test2(this.player.x + this.player.w - this.actors.test.x,
-                       this.actors.test.x + this.actors.test.w - this.player.x,
-                       this.player.y + this.player.h - this.actors.test.y,
-                       this.actors.test.y + this.actors.test.h - this.player.y);
-        }
+        for (let col in this.player.collisions) this.player.collisions[col] = null;
+        this.test2(this.player.x + this.player.w - this.actors.test.x,
+                    this.actors.test.x + this.actors.test.w - this.player.x,
+                    this.player.y + this.player.h - this.actors.test.y,
+                    this.actors.test.y + this.actors.test.h - this.player.y);
+        console.log(this.player.collisions);
 
         // for (let actor in this.actors) {
         //     if (!this.isCollision(actor)) return;
         // }
     }
 
-    test(ax1, ax2, ay1, ay2, bx1, bx2, by1, by2) {
-        // console.log("ax1, ax2, ay1, ay2, bx1, bx2, by1, by2:", ax1, ax2, ay1, ay2, bx1, bx2, by1, by2);
-        console.log("ax2-bx1:", ax2-bx1, "bx2-ax1", bx2-ax1, "ay2-by1:", ay2-by1, "by2-ay1", by2-ay1);
-    }
-
     test2(dLeft, dRight, dUp, dDown) {
         //dLeft = ax2-bx1, dRight = bx2-ax1, dUp = ay2-by1, dDown = by2-ay1
-        console.log(dLeft, dRight, dUp, dDown);
         if (dLeft<0 || dRight<0 || dUp<0 || dDown<0) {
-            console.log("No collision");
             return;
         }
         if (dLeft <= dRight && dLeft <= dUp && dLeft <= dDown) {
-            console.log("Right");
+            this.player.collisions.right = true;
             return;
         }
         if (dRight <= dUp && dRight <= dDown) {
-            console.log("Left");
+            this.player.collisions.left = true;
             return;
         }
         if (dUp <= dDown) {
-            console.log("Down");
+            this.player.collisions.down = true;
             return;
         }
-        console.log("Up");
-    }
-
-    isCollision(actor) {
-        if (this.player.x <= actor.x+actor.w &&
-            this.player.x+this.player.w >= actor.x &&
-            this.player.y <= actor.y+actor.h &&
-            this.player.y+this.player.h >= actor.y) return true;
+        this.player.collisions.up = true;
     }
 }
 
@@ -94,10 +75,10 @@ class Actor {
     div = null;
     x; y; w; h;
     collisions = {
-        left: null,
-        right: null,
-        up: null,
-        down: null,
+        left: false,
+        right: false,
+        up: false,
+        down: false,
     }
 
     constructor(x=0, y=0, w=0, h=0, name='', color='white') {
