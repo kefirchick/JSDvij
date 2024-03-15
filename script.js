@@ -15,17 +15,16 @@ class Level {
     }
 
     update() {
+        for (let col in this.player.collisions) {
+            this.player.collisions[col] = null;
+        }
+        for (let actor in this.actors) {
+            this.collisionCheck(this.player.x + this.player.w - this.actors[actor].x,
+                this.actors[actor].x + this.actors[actor].w - this.player.x,
+                this.player.y + this.player.h - this.actors[actor].y,
+                this.actors[actor].y + this.actors[actor].h - this.player.y);
+        }
         this.player.update();
-        for (let col in this.player.collisions) this.player.collisions[col] = null;
-        this.collisionCheck(this.player.x + this.player.w - this.actors.test.x,
-                    this.actors.test.x + this.actors.test.w - this.player.x,
-                    this.player.y + this.player.h - this.actors.test.y,
-                    this.actors.test.y + this.actors.test.h - this.player.y);
-        console.log(this.player.collisions);
-
-        // for (let actor in this.actors) {
-        //     if (!this.isCollision(actor)) return;
-        // }
     }
 
     collisionCheck(dLeft, dRight, dUp, dDown) {
@@ -117,7 +116,6 @@ class Player extends Actor {
         if (input.down && !this.collisions.down) this.y += this.speed;
         this.div.style.left = this.x + 'px';
         this.div.style.top = this.y + 'px';
-
     }
 }
 
