@@ -17,7 +17,7 @@ class Level {
     update() {
         this.player.update();
         for (let col in this.player.collisions) this.player.collisions[col] = null;
-        this.test2(this.player.x + this.player.w - this.actors.test.x,
+        this.collisionCheck(this.player.x + this.player.w - this.actors.test.x,
                     this.actors.test.x + this.actors.test.w - this.player.x,
                     this.player.y + this.player.h - this.actors.test.y,
                     this.actors.test.y + this.actors.test.h - this.player.y);
@@ -28,7 +28,7 @@ class Level {
         // }
     }
 
-    test2(dLeft, dRight, dUp, dDown) {
+    collisionCheck(dLeft, dRight, dUp, dDown) {
         //dLeft = ax2-bx1, dRight = bx2-ax1, dUp = ay2-by1, dDown = by2-ay1
         if (dLeft<0 || dRight<0 || dUp<0 || dDown<0) {
             return;
