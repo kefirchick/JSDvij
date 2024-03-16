@@ -53,6 +53,9 @@ class Input {
     right = false;
     up = false;
     down = false;
+    speed = 10;
+    dx = 0;
+    dy = 0;
 
     constructor() {
         document.addEventListener('keydown', (event) => {
@@ -67,6 +70,22 @@ class Input {
             if (event.key == 'ArrowUp') this.up = false;
             if (event.key == 'ArrowDown') this.down = false;
         });
+    }
+
+    update() {
+        if (this.left && !this.right) {
+            this.dx = -this.speed;
+        } else if (this.right && !this.left) {
+            this.dx = this.speed;
+        } else this.dx = 0;
+
+        if (this.up && !this.down) {
+            this.dy = -this.speed;
+        } else if (this.down && !this.up) {
+            this.dy = this.speed;
+        } else this.dy = 0;
+
+        return [this.dx, this.dy];
     }
 }
 
@@ -110,10 +129,9 @@ class Player extends Actor {
     }
 
     update() {
-        if (input.left && !this.collisions.left) this.x -= this.speed;
-        if (input.right && !this.collisions.right) this.x += this.speed;
-        if (input.up && !this.collisions.up) this.y -= this.speed;
-        if (input.down && !this.collisions.down) this.y += this.speed;
+        input.update();
+        if ( (input.dx < 0 && !this.collisions.left) || (input.dx > 0 && !this.collisions.right) ) this.x += input.dx;
+        if ( (input.dy < 0 && !this.collisions.up) || (input.dy > 0 && !this.collisions.down) ) this.y += input.dy;
         this.div.style.left = this.x + 'px';
         this.div.style.top = this.y + 'px';
     }
