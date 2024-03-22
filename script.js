@@ -49,43 +49,45 @@ class Level {
 }
 
 class Input {
+    player = null;
     left = false;
     right = false;
     up = false;
     down = false;
     speed = 10;
-    dx = 0;
-    dy = 0;
+    // dx = 0;
+    // dy = 0;
 
-    constructor() {
+    constructor(player) {
+        this.player = player;
         document.addEventListener('keydown', (event) => {
             if (event.key == 'ArrowLeft') this.left = true;
             if (event.key == 'ArrowRight') this.right = true;
             if (event.key == 'ArrowUp') this.up = true;
             if (event.key == 'ArrowDown') this.down = true;
+            this.update();
         });
         document.addEventListener('keyup', (event) => {
             if (event.key == 'ArrowLeft') this.left = false;
             if (event.key == 'ArrowRight') this.right = false;
             if (event.key == 'ArrowUp') this.up = false;
             if (event.key == 'ArrowDown') this.down = false;
+            this.update();
         });
     }
 
     update() {
         if (this.left && !this.right) {
-            this.dx = -this.speed;
+            this.player.vx = -this.speed;
         } else if (this.right && !this.left) {
-            this.dx = this.speed;
-        } else this.dx = 0;
+            this.player.vx = this.speed;
+        } else this.player.vx = 0;
 
         if (this.up && !this.down) {
-            this.dy = -this.speed;
+            this.player.vy = -this.speed;
         } else if (this.down && !this.up) {
-            this.dy = this.speed;
-        } else this.dy = 0;
-
-        return [this.dx, this.dy];
+            this.player.vy = this.speed;
+        } else this.player.vy = 0;
     }
 }
 
@@ -119,26 +121,24 @@ class Actor {
 }
 
 class Player extends Actor {
-    speed;
-    input = null;
+    ax = 0; ay = 0; vx = 0; vy = 0; dx = 0; dy = 0;
 
-    constructor(input, x=0, y=0, w=50, h=50, speed=10, color='red') {
+    constructor(x=0, y=0, w=50, h=50, speed=10, color='red') {
         super(x, y, w, h, 'player', color);
-        this.speed = speed;
-        this.input = input;
     }
 
     update() {
-        input.update();
-        if ( (input.dx < 0 && !this.collisions.left) || (input.dx > 0 && !this.collisions.right) ) this.x += input.dx;
-        if ( (input.dy < 0 && !this.collisions.up) || (input.dy > 0 && !this.collisions.down) ) this.y += input.dy;
+        this.dx = this.vx;
+        this.dy = this.vy;
+        if ( (this.dx < 0 && !this.collisions.left) || (this.dx > 0 && !this.collisions.right) ) this.x += this.dx;
+        if ( (this.dy < 0 && !this.collisions.up) || (this.dy > 0 && !this.collisions.down) ) this.y += this.dy;
         this.div.style.left = this.x + 'px';
         this.div.style.top = this.y + 'px';
     }
 }
 
-let input = new Input();
-let player = new Player(input, 20, 20);
+let player = new Player(20, 20);
+let input = new Input(player);
 let level = new Level(player);
 let border1 = level.createActor(10, 10, 10, 320, 'border1', 'blue');
 level.createActor(20, 10, 300, 10, 'border2', 'blue');
