@@ -146,25 +146,28 @@ class Player extends Actor {
     update() {
         if ( (this.ax <= 0 && this.vx > -this.vmax) || (this.ax > 0 && this.vx < this.vmax) ) this.vx += this.ax;
         if ( (this.ay <= 0 && this.vy > -this.vmax) || (this.ay > 0 && this.vy < this.vmax) ) this.vy += this.ay;
-        // console.log("ax", this.ax, "ay", this.ay, "vx", this.vx, "vy", this.vy);
+
         if (this.vx < this.k && this.vx > -this.k) {
             this.vx = 0;
         } else if (this.vx < 0) {
             this.vx += this.k;
         } else {
-            this.vx -= this.k;
+            this.vx += -this.k;
         }
         if (this.vy < this.k && this.vy > -this.k) {
             this.vy = 0;
         } else if (this.vy < 0) {
             this.vy += this.k;
         } else {
-            this.vy -= this.k;
+            this.vy += -this.k;
         }
+
         this.dx = this.vx;
         this.dy = this.vy;
+
         if ( (this.dx < 0 && !this.collisions.left) || (this.dx > 0 && !this.collisions.right) ) this.x += this.dx;
         if ( (this.dy < 0 && !this.collisions.up) || (this.dy > 0 && !this.collisions.down) ) this.y += this.dy;
+
         this.div.style.left = this.x + 'px';
         this.div.style.top = this.y + 'px';
     }
