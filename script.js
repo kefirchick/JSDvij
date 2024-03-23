@@ -55,8 +55,6 @@ class Input {
     up = false;
     down = false;
     speed = 10;
-    // dx = 0;
-    // dy = 0;
 
     constructor(player) {
         this.player = player;
@@ -91,6 +89,24 @@ class Input {
     }
 }
 
+class InputVelocity extends Input {
+    velocity = 1;
+
+    update() {
+        if (this.left && !this.right) {
+            this.player.ax = -this.velocity;
+        } else if (this.right && !this.left) {
+            this.player.ax = this.velocity;
+        } else this.player.ax = 0;
+
+        if (this.up && !this.down) {
+            this.player.ay = -this.velocity;
+        } else if (this.down && !this.up) {
+            this.player.ay = this.velocity;
+        } else this.player.ay = 0;
+    }
+}
+
 class Actor {
     div = null;
     x; y; w; h;
@@ -121,13 +137,30 @@ class Actor {
 }
 
 class Player extends Actor {
-    ax = 0; ay = 0; vx = 0; vy = 0; dx = 0; dy = 0;
+    k = 0.5; ax = 0; ay = 0; vmax = 10; vx = 0; vy = 0; dx = 0; dy = 0;
 
     constructor(x=0, y=0, w=50, h=50, speed=10, color='red') {
         super(x, y, w, h, 'player', color);
     }
 
     update() {
+        if ( (this.ax <= 0 && this.vx > -this.vmax) || (this.ax > 0 && this.vx < this.vmax) ) this.vx += this.ax;
+        if ( (this.ay <= 0 && this.vy > -this.vmax) || (this.ay > 0 && this.vy < this.vmax) ) this.vy += this.ay;
+        // console.log("ax", this.ax, "ay", this.ay, "vx", this.vx, "vy", this.vy);
+        if (this.vx < this.k && this.vx > -this.k) {
+            this.vx = 0;
+        } else if (this.vx < 0) {
+            this.vx += this.k;
+        } else {
+            this.vx -= this.k;
+        }
+        if (this.vy < this.k && this.vy > -this.k) {
+            this.vy = 0;
+        } else if (this.vy < 0) {
+            this.vy += this.k;
+        } else {
+            this.vy -= this.k;
+        }
         this.dx = this.vx;
         this.dy = this.vy;
         if ( (this.dx < 0 && !this.collisions.left) || (this.dx > 0 && !this.collisions.right) ) this.x += this.dx;
@@ -138,7 +171,7 @@ class Player extends Actor {
 }
 
 let player = new Player(20, 20);
-let input = new Input(player);
+let input = new InputVelocity(player);
 let level = new Level(player);
 let border1 = level.createActor(10, 10, 10, 320, 'border1', 'blue');
 level.createActor(20, 10, 300, 10, 'border2', 'blue');
