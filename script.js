@@ -2,7 +2,8 @@ let frameRate = 60;
 
 class Level {
     actors = {};
-    player;
+    player = null;
+    friction = 0.5;
 
     constructor(player) {
         this.player = player;
@@ -24,7 +25,25 @@ class Level {
                 this.player.y + this.player.h - this.actors[actor].y,
                 this.actors[actor].y + this.actors[actor].h - this.player.y);
         }
+        this.addFriction(this.player);
         this.player.update();
+    }
+
+    addFriction(actor) {
+        if (actor.vx < this.friction && actor.vx > -this.friction) {
+            actor.vx = 0;
+        } else if (actor.vx < 0) {
+            actor.vx += this.friction;
+        } else {
+            actor.vx += -this.friction;
+        }
+        if (actor.vy < this.friction && actor.vy > -this.friction) {
+            actor.vy = 0;
+        } else if (actor.vy < 0) {
+            actor.vy += this.friction;
+        } else {
+            actor.vy += -this.friction;
+        }
     }
 
     collisionCheck(dLeft, dRight, dUp, dDown) {
@@ -137,7 +156,7 @@ class Actor {
 }
 
 class Player extends Actor {
-    k = 0.5; ax = 0; ay = 0; vmax = 10; vx = 0; vy = 0; dx = 0; dy = 0;
+    ax = 0; ay = 0; vmax = 10; vx = 0; vy = 0; dx = 0; dy = 0;
 
     constructor(x=0, y=0, w=50, h=50, speed=10, color='red') {
         super(x, y, w, h, 'player', color);
@@ -146,21 +165,6 @@ class Player extends Actor {
     update() {
         if ( (this.ax <= 0 && this.vx > -this.vmax) || (this.ax > 0 && this.vx < this.vmax) ) this.vx += this.ax;
         if ( (this.ay <= 0 && this.vy > -this.vmax) || (this.ay > 0 && this.vy < this.vmax) ) this.vy += this.ay;
-
-        if (this.vx < this.k && this.vx > -this.k) {
-            this.vx = 0;
-        } else if (this.vx < 0) {
-            this.vx += this.k;
-        } else {
-            this.vx += -this.k;
-        }
-        if (this.vy < this.k && this.vy > -this.k) {
-            this.vy = 0;
-        } else if (this.vy < 0) {
-            this.vy += this.k;
-        } else {
-            this.vy += -this.k;
-        }
 
         this.dx = this.vx;
         this.dy = this.vy;
