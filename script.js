@@ -155,11 +155,11 @@ class Actor {
     }
 }
 
-class Player extends Actor {
+class DynamicActor extends Actor {
     ax = 0; ay = 0; vmax = 10; vx = 0; vy = 0; dx = 0; dy = 0;
 
-    constructor(x=0, y=0, w=50, h=50, speed=10, color='red') {
-        super(x, y, w, h, 'player', color);
+    constructor(x=0, y=0, w=50, h=50, name='', color='red') {
+        super(x, y, w, h, name, color);
     }
 
     update() {
@@ -177,7 +177,7 @@ class Player extends Actor {
     }
 }
 
-let player = new Player(20, 20);
+let player = new DynamicActor(20, 20, 50, 50, 'player');
 let input = new InputVelocity(player);
 let level = new Level(player);
 let border1 = level.createActor(10, 10, 10, 320, 'border1', 'blue');
