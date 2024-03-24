@@ -27,6 +27,7 @@ class Level {
             }
             this.addFriction(actor);
             actor.update();
+            console.log(this.actors.player.ax, this.actors.player.ay, this.actors.player.vx, this.actors.player.vy);
         }
     }
 
@@ -58,17 +59,21 @@ class Level {
         }
         if (dLeft <= dRight && dLeft <= dUp && dLeft <= dDown) {
             actor.collisions.right = true;
+            if (actor instanceof DynamicActor) actor.vx = -actor.vx + other.vx;
             return;
         }
         if (dRight <= dUp && dRight <= dDown) {
             actor.collisions.left = true;
+            actor.vx = -actor.vx + other.vx;
             return;
         }
         if (dUp <= dDown) {
             actor.collisions.down = true;
+            actor.vy = -actor.vy + other.vy;
             return;
         }
         actor.collisions.up = true;
+        actor.vy = -actor.vy + other.vy;
     }
 }
 
@@ -134,6 +139,7 @@ class InputVelocity extends Input {
 class Actor {
     div = null;
     x; y; w; h;
+    ax = 0; ay = 0; vmax = 10; vx = 0; vy = 0; dx = 0; dy = 0;
     collisions = {
         left: false,
         right: false,
@@ -163,7 +169,6 @@ class Actor {
 }
 
 class DynamicActor extends Actor {
-    ax = 0; ay = 0; vmax = 10; vx = 0; vy = 0; dx = 0; dy = 0;
 
     constructor(x=0, y=0, w=50, h=50, name='', color='red') {
         super(x, y, w, h, name, color);
@@ -191,7 +196,7 @@ let border1 = level.createActor(10, 10, 10, 320, 'border1', 'blue');
 level.createActor(20, 10, 300, 10, 'border2', 'blue');
 level.createActor(320, 10, 10, 320, 'border3', 'blue');
 level.createActor(20, 320, 300, 10, 'border4', 'blue');
-level.createActor(100, 100, 100, 100, 'test', 'green');
+level.createDynamicActor(100, 100, 100, 100, 'obstacle', 'green');
 
 
 let timerId = setInterval(update, 1000/frameRate);
