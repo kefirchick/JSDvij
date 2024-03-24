@@ -21,21 +21,13 @@ class Level {
             let actor = this.actors[a];
 
             for (let col in actor.collisions) { actor.collisions[col] = null; }
-            for (let o in this.actors) {
-                let other = this.actors[o];
-                if (actor == other) continue;
-                this.collisionCheck(
-                    actor,
-                    actor.x + actor.w - other.x,
-                    other.x + other.w - actor.x,
-                    actor.y + actor.h - other.y,
-                    other.y + other.h - actor.y
-                );
+            for (let other in this.actors) {
+                if (actor == this.actors[other]) continue;
+                this.collisionCheck(actor, this.actors[other]);
             }
             this.addFriction(actor);
             actor.update();
         }
-        // console.log(this.actors.player.collisions);
     }
 
     addFriction(actor) {
@@ -55,12 +47,12 @@ class Level {
         }
     }
 
-    collisionCheck(actor, dLeft, dRight, dUp, dDown) {
-        if (actor.div.className == 'player') {
-            console.log(actor);
-            console.log(dLeft, dRight, dUp, dDown);
-        }
-        //dLeft = ax2-bx1, dRight = bx2-ax1, dUp = ay2-by1, dDown = by2-ay1
+    collisionCheck(actor, other) {
+        let dLeft = actor.x + actor.w - other.x;
+        let dRight = other.x + other.w - actor.x;
+        let dUp = actor.y + actor.h - other.y;
+        let dDown = other.y + other.h - actor.y;
+
         if (dLeft<0 || dRight<0 || dUp<0 || dDown<0) {
             return;
         }
